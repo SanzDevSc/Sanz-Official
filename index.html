@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sanz Ganteng Banget</title>
+    <title>Sanz Ganteng Banget 🚀</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --gojo-blue: #00f0ff;
             --gojo-purple: #8a2be2;
+            --gold-trust: #fbbf24;
             --ios-glass: rgba(30, 30, 40, 0.55);
             --ios-border: rgba(255, 255, 255, 0.15);
             --text-primary: #ffffff;
@@ -32,88 +33,103 @@
             overflow-x: hidden;
         }
 
-        /* === EFEK PARTIKEL INFINITE VOID === */
-        #particles-container {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; /* Di belakang konten utama */
-            pointer-events: none; /* Biar ga ganggu klik */
+        /* === LAYAR LOADING === */
+        #loading-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #020202; z-index: 9999999; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.8s;
         }
 
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            bottom: -10px;
-            animation: floatUp linear infinite;
+        .cyber-spinner {
+            width: 50px; height: 50px;
+            border: 4px solid rgba(0, 240, 255, 0.1); border-top: 4px solid var(--gojo-blue);
+            border-right: 4px solid var(--gojo-purple); border-radius: 50%;
+            animation: spinFast 1s linear infinite; margin-bottom: 25px; box-shadow: 0 0 15px var(--gojo-blue);
         }
 
-        @keyframes floatUp {
-            0% { transform: translateY(0) scale(0.5); opacity: 0; }
-            20% { opacity: 0.8; }
-            80% { opacity: 0.6; }
-            100% { transform: translateY(-120vh) scale(1.5); opacity: 0; }
+        @keyframes spinFast { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .glitch-loader {
+            color: var(--gojo-blue); font-size: 1.1rem; font-weight: 800; letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--gojo-blue); animation: glitchAnim 1.5s infinite; position: relative; text-align: center;
         }
+        .glitch-loader::before, .glitch-loader::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #020202; }
+        .glitch-loader::before { left: 2px; text-shadow: -2px 0 var(--gojo-purple); animation: glitch-anim-1 2s infinite linear alternate-reverse; }
+        .glitch-loader::after { left: -2px; text-shadow: 2px 0 #fff; animation: glitch-anim-2 3s infinite linear alternate-reverse; }
+
+        @keyframes glitch-anim-1 { 0% { clip-path: inset(20% 0 80% 0); } 20% { clip-path: inset(60% 0 10% 0); } 40% { clip-path: inset(40% 0 50% 0); } 60% { clip-path: inset(80% 0 5% 0); } 80% { clip-path: inset(10% 0 70% 0); } 100% { clip-path: inset(30% 0 20% 0); } }
+        @keyframes glitch-anim-2 { 0% { clip-path: inset(10% 0 60% 0); } 20% { clip-path: inset(30% 0 20% 0); } 40% { clip-path: inset(70% 0 10% 0); } 60% { clip-path: inset(20% 0 50% 0); } 80% { clip-path: inset(50% 0 30% 0); } 100% { clip-path: inset(5% 0 80% 0); } }
+
+        /* === EFEK PARTIKEL === */
+        #particles-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        .particle { position: absolute; border-radius: 50%; bottom: -10px; animation: floatUp linear infinite; }
+        @keyframes floatUp { 0% { transform: translateY(0) scale(0.5); opacity: 0; } 20% { opacity: 0.8; } 80% { opacity: 0.6; } 100% { transform: translateY(-120vh) scale(1.5); opacity: 0; } }
 
         /* === KONTEN UTAMA === */
-        .ios-container { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 15px; z-index: 10; position: relative; }
+        .ios-container { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 15px; z-index: 10; position: relative; opacity: 0; transform: translateY(20px); transition: opacity 1s ease, transform 1s ease; }
+        .ios-container.loaded { opacity: 1; transform: translateY(0); }
 
         .ios-glass-panel {
-            background: var(--ios-glass);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid var(--ios-border);
-            border-radius: 32px;
-            padding: 30px 20px;
-            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.5);
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            background: var(--ios-glass); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--ios-border); border-radius: 32px; padding: 30px 20px; box-shadow: 0 25px 40px rgba(0, 0, 0, 0.5);
         }
 
         .ios-profile { text-align: center; position: relative; overflow: hidden; }
-        
         .ios-avatar {
             width: 105px; height: 105px; border-radius: 50%; margin: 0 auto 15px; position: relative;
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.4); border: 2px solid #fff; animation: pulseAura 3s infinite alternate; overflow: hidden;
-            z-index: 2;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.4); border: 2px solid #fff; animation: pulseAura 3s infinite alternate; overflow: hidden; z-index: 2;
         }
         .ios-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        @keyframes pulseAura { 0% { box-shadow: 0 0 15px rgba(0, 240, 255, 0.3), 0 0 30px rgba(0, 240, 255, 0.2); border-color: rgba(0, 240, 255, 0.8); } 100% { box-shadow: 0 0 30px rgba(138, 43, 226, 0.6), 0 0 50px rgba(138, 43, 226, 0.4); border-color: rgba(138, 43, 226, 0.8); } }
 
-        @keyframes pulseAura { 
-            0% { box-shadow: 0 0 15px rgba(0, 240, 255, 0.3), 0 0 30px rgba(0, 240, 255, 0.2); border-color: rgba(0, 240, 255, 0.8); } 
-            100% { box-shadow: 0 0 30px rgba(138, 43, 226, 0.6), 0 0 50px rgba(138, 43, 226, 0.4); border-color: rgba(138, 43, 226, 0.8); } 
-        }
-
-        /* Teks Nama Menyala */
         .neon-name {
-            font-size: 1.6rem; 
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-            font-weight: 800;
-            color: #fff;
-            text-shadow: 0 0 10px var(--gojo-blue), 0 0 20px var(--gojo-purple);
-            animation: textGlow 2s infinite alternate;
+            font-size: 1.6rem; letter-spacing: 1px; margin-bottom: 5px; font-weight: 800; color: #fff;
+            text-shadow: 0 0 10px var(--gojo-blue), 0 0 20px var(--gojo-purple); animation: textGlow 2s infinite alternate;
+        }
+        @keyframes textGlow { 0% { text-shadow: 0 0 10px var(--gojo-blue); } 100% { text-shadow: 0 0 20px var(--gojo-blue), 0 0 30px var(--gojo-purple); } }
+
+        /* JAM DIGITAL HACKER */
+        .cyber-clock {
+            display: inline-block; margin-top: 10px; padding: 5px 15px; 
+            background: rgba(0, 240, 255, 0.08); border: 1px solid var(--gojo-blue); border-radius: 20px; 
+            font-family: monospace; font-size: 0.75rem; color: var(--gojo-blue); 
+            letter-spacing: 2px; text-shadow: 0 0 8px var(--gojo-blue); font-weight: bold;
         }
 
-        @keyframes textGlow {
-            0% { text-shadow: 0 0 10px var(--gojo-blue); }
-            100% { text-shadow: 0 0 20px var(--gojo-blue), 0 0 30px var(--gojo-purple); }
+        /* LIQUID GLASS BUTTONS */
+        .liquid-glass {
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.4), rgba(138, 43, 226, 0.1)); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.25) !important; box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.1), 0 10px 20px rgba(138, 43, 226, 0.3);
+            flex-direction: row !important; justify-content: flex-start !important; gap: 15px; padding: 18px 20px !important; width: 100%; border-radius: 24px;
+            color: #fff; cursor: pointer; transition: 0.3s; align-items: center; display: flex;
         }
+        .liquid-glass:active { transform: scale(0.95); background: rgba(138, 43, 226, 0.6); }
 
-        /* GRID 2 KOLOM */
+        .liquid-gold {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(251, 191, 36, 0.05));
+            box-shadow: inset 0 0 15px rgba(251, 191, 36, 0.1), 0 10px 20px rgba(251, 191, 36, 0.15); margin-top: -5px;
+        }
+        .liquid-gold:active { background: rgba(251, 191, 36, 0.5); }
+
+        /* GRID */
         .ios-widget-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 
         .ios-btn {
             background: rgba(255, 255, 255, 0.03); border: 1px solid var(--ios-border); border-radius: 24px; padding: 20px 10px;
             display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: var(--text-primary);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease; cursor: pointer;
-            position: relative; overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease; cursor: pointer; position: relative; overflow: hidden;
         }
-        
         .ios-btn i { font-size: 1.8rem; margin-bottom: 10px; color: #ffffff; transition: color 0.4s ease, text-shadow 0.4s ease, transform 0.4s ease; z-index: 2; }
-        .ios-btn span { font-size: 0.8rem; font-weight: 600; pointer-events: none; z-index: 2; }
+        .ios-btn span { font-size: 0.8rem; font-weight: 600; pointer-events: none; z-index: 2; text-align: center; }
         .full-width { grid-column: span 2; flex-direction: row; gap: 15px; padding: 18px; }
         .full-width i { margin-bottom: 0; }
 
-        /* MODAL POPUP */
+        /* COPYRIGHT */
+        .copyright { text-align: center; font-size: 0.75rem; color: rgba(255, 255, 255, 0.4); margin-top: 15px; margin-bottom: 10px; letter-spacing: 1px; font-weight: 600; text-transform: uppercase; }
+        .copyright span { color: var(--gojo-blue); font-weight: 800; text-shadow: 0 0 5px rgba(0, 240, 255, 0.5); }
+
+        /* MODAL POPUP GLOBAL */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.0); backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px);
@@ -128,133 +144,174 @@
         .modal-content::-webkit-scrollbar { display: none; }
         .modal-overlay.show .modal-content { transform: scale(1) translateY(0); opacity: 1; }
 
-        .product-card {
-            background: rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease;
-        }
-        .product-card:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.1); border-color: var(--gojo-blue); }
+        .product-card { background: rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255, 255, 255, 0.05); }
         .btn-buy { background: linear-gradient(135deg, var(--gojo-blue), #00b3ff); color: #000; padding: 8px 15px; border-radius: 12px; font-weight: 800; text-decoration: none; transition: 0.3s; box-shadow: 0 5px 15px rgba(0, 240, 255, 0.3); }
-        .btn-buy:active { transform: scale(0.9); }
+        
+        #bioModal .modal-content { border-color: var(--gojo-purple); box-shadow: 0 0 50px rgba(138, 43, 226, 0.2); }
+        #testiModal .modal-content { border-color: var(--gold-trust); box-shadow: 0 0 50px rgba(251, 191, 36, 0.2); padding: 20px 15px; }
+
+        /* TESTI SCROLL CONTAINER */
+        .testi-scroll-container {
+            display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px 15px;
+            scroll-snap-type: x mandatory; -ms-overflow-style: none; scrollbar-width: none;
+        }
+        .testi-scroll-container::-webkit-scrollbar { display: none; }
+        .testi-img {
+            flex: 0 0 85%; height: 350px; border-radius: 15px; scroll-snap-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.2); object-fit: cover; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            background: #111; 
+        }
     </style>
 </head>
 <body>
 
+    <div id="loading-screen">
+        <div class="cyber-spinner"></div>
+        <div class="glitch-loader" data-text="MEMUAT HALAMAN, TUNGGU SEBENTAR">
+            MEMUAT HALAMAN, TUNGGU SEBENTAR
+        </div>
+    </div>
+
     <div id="particles-container"></div>
 
-    <div class="ios-container">
+    <div class="ios-container" id="main-content">
         <div class="ios-glass-panel ios-profile">
-            <div class="ios-avatar">
-                <img src="https://files.catbox.moe/xb1ehl.jpg" alt="Sanz Profile">
-            </div>
+            <div class="ios-avatar"><img src="https://files.catbox.moe/xb1ehl.jpg" alt="Sanz Profile"></div>
             <h1 class="neon-name">Sanz</h1>
-            <p style="color: var(--text-secondary); font-size: 0.85rem; font-weight: 600;">Welcome to Website resmi Sanz Store 01</p>
-            <p style="color: var(--text-secondary); font-size: 0.85rem; font-weight: 600;"> ㅤ</p>
-            <p style="color: var(--text-secondary); font-size: 0.85rem; font-weight: 600;">Disini adalah tempatnya berkumpulnya Contact Admin, Sosial Media Admin</p>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; font-weight: 600;">Welcome To Website Resmi Sanz Store 01</p>
+            <div id="cyber-clock" class="cyber-clock">00:00:00 WIB</div>
+        </div>
+
+        <div class="liquid-glass" onclick="openBio()">
+            <i class="fas fa-user-astronaut" style="font-size: 1.5rem; text-shadow: 0 0 10px #fff;"></i>
+            <div style="text-align: left; flex: 1;">
+                <span style="display: block; font-size: 0.95rem; font-weight: 700;">About Sanz</span>
+                <small style="color: rgba(255,255,255,0.7); font-size: 0.75rem;">Seputar Biodata Sanz</small>
+            </div>
+            <i class="fas fa-chevron-right" style="font-size: 1rem; color: rgba(255,255,255,0.5);"></i>
+        </div>
+
+        <div class="liquid-glass liquid-gold" onclick="openTesti()" style="margin-top: -5px;">
+            <i class="fas fa-star" style="font-size: 1.5rem; text-shadow: 0 0 10px var(--gold-trust); color: var(--gold-trust);"></i>
+            <div style="text-align: left; flex: 1;">
+                <span style="display: block; font-size: 0.95rem; font-weight: 700;">Testimoni Pelanggan</span>
+                <small style="color: rgba(255,255,255,0.7); font-size: 0.75rem;">Lihat All Testimoni Sanz</small>
+            </div>
+            <i class="fas fa-chevron-right" style="font-size: 1rem; color: rgba(255,255,255,0.5);"></i>
         </div>
 
         <div class="ios-widget-grid">
-            <div class="ios-btn" data-color="#25D366" data-link="https://wa.me/6285718906011">
-                <i class="fab fa-whatsapp"></i><span>WhatsApp</span>
+            <div class="ios-btn" data-color="#25D366" data-link="https://wa.me/6285718906011"><i class="fab fa-whatsapp"></i><span>Chat Pribadi</span></div>
+            <div class="ios-btn" data-color="#0088cc" data-link="https://t.me/SanzNotDev"><i class="fab fa-telegram-plane"></i><span>Telegram</span></div>
+            <div class="ios-btn" data-color="#E1306C" data-link="https://www.instagram.com/sanzstr01"><i class="fab fa-instagram"></i><span>Instagram</span></div>
+            <div class="ios-btn" data-color="#ff9f00" data-link="STORE"><i class="fas fa-store"></i><span>SANZ STORE 01</span></div>
+            
+            <div class="ios-btn full-width" data-color="#25D366" data-link="https://chat.whatsapp.com/BRidgPdCrOX5X7DvHBxhHg?mode=hqctcla"><i class="fas fa-users"></i><span>Grup WA</span></div>
+            <div class="ios-btn full-width" data-color="#25D366" data-link="https://whatsapp.com/channel/0029Vb75JrW6rsQsJJLxLt35"><i class="fas fa-bullhorn"></i><span>Join Saluran WA</span></div>
+            <div class="ios-btn full-width" data-color="#fbbf24" data-link="https://files.catbox.moe/sx96s2.jpg"><i class="fas fa-qrcode"></i><span>QRIS Donasi</span></div>
+        </div>
+
+        <div class="copyright">&copy; 2026 <span>Sanz Store 01</span>. All Rights Reserved.</div>
+    </div>
+
+    <div class="modal-overlay" id="testiModal" onclick="closeTesti()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 style="margin-bottom: 10px; color: var(--gold-trust); font-size: 1.3rem; text-align: center; text-shadow: 0 0 10px rgba(251,191,36,0.5);">⭐ REAL TESTIMONI</h2>
+            <p style="text-align: center; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 15px;">Geser ke kiri buat liat bukti transfer pembeli Sanz ➡️</p>
+            
+            <div class="testi-scroll-container">
+                <img src="https://c.termai.cc/i101/ySHEN.jpg" alt="Testi 1" class="testi-img" onerror="this.src='https://files.catbox.moe/xb1ehl.jpg'">
+                <img src="https://files.catbox.moe/2h8r5l.jpg" alt="Testi 2" class="testi-img" onerror="this.src='https://files.catbox.moe/xb1ehl.jpg'">
+                <img src="https://c.termai.cc/i124/pncxX2D.jpg" alt="Testi 3" class="testi-img" onerror="this.src='https://files.catbox.moe/xb1ehl.jpg'">
             </div>
-            <div class="ios-btn" data-color="#0088cc" data-link="https://t.me/SanzNotDev">
-                <i class="fab fa-telegram-plane"></i><span>Telegram</span>
+
+            <a href="https://whatsapp.com/channel/0029Vb7IpZuDzgTKCN8AhL3O" class="btn-buy" style="display: block; text-align: center; width: 100%; margin-top: 15px; background: linear-gradient(135deg, #fbbf24, #f59e0b);">Lihat Testimoni Lainnya</a>
+
+            <button onclick="closeTesti()" style="width:100%; padding:12px; border-radius:18px; border:1px solid rgba(251,191,36,0.2); background:rgba(251,191,36,0.05); color:white; margin-top:10px; font-weight: 700; transition: 0.3s; cursor:pointer;">Tutup</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="bioModal" onclick="closeBio()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 style="margin-bottom: 20px; color: var(--gojo-purple); font-size: 1.3rem; text-align: center;">👤 About Sanz</h2>
+            <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; text-align: left;">
+                <p style="margin-bottom: 10px;">Saya adalah Sanz, sosok di balik operasional dan pengembangan platform ini. Sebagai individu yang memiliki passion besar di dunia teknologi, saya membangun toko ini bukan sekadar untuk bertransaksi, melainkan untuk memberikan solusi digital yang praktis, aman, dan berkualitas bagi seluruh pelanggan saya.</p>
+                <p style="margin-bottom: 10px;">Perjalanan saya di dunia digital didorong oleh keahlian dalam Web Development (HTML, CSS, JavaScript, Node.js) dan Graphic Design. Hal ini memungkinkan saya untuk memastikan bahwa setiap layanan yang tersedia di Sanz Store 01 mulai dari kebutuhan Nokos, layanan script, hingga kebutuhan digital lainnya dikelola dengan standar teknis yang matang dan profesional.</p>
+                <p style="margin-bottom: 10px;">Di sisi lain, kepercayaan pelanggan adalah prioritas utama saya. Nilai tanggung jawab ini saya asah melalui peran saya sebagai <span style="color:var(--gojo-purple); font-weight:bold;">Ketua OSIS di SMP Negeri 138 Jakarta</span>. Memimpin organisasi sekolah terbesar telah membentuk karakter saya menjadi pribadi yang disiplin, transparan, dan selalu mengedepankan kepentingan bersama. Karakter kepemimpinan inilah yang saya bawa ke dalam operasional Sanz Store 01 saya memastikan setiap pesanan ditangani dengan jujur dan penuh tanggung jawab serta amanah.</p>
+                <p>Bagi saya, Sanz Store 01 adalah representasi dari kombinasi antara hobi ngoding, desain, dan jiwa kepemimpinan saya. Saya berkomitmen untuk terus berinovasi dan memberikan pelayanan terbaik di Sanz Store 01 agar tetap menjadi pilihan utama bagi Anda yang mencari kebutuhan digital dengan pelayanan yang ramah dan tepercaya.</p>
             </div>
-            <div class="ios-btn" data-color="#E1306C" data-link="https://www.instagram.com/sanzstr01">
-                <i class="fab fa-instagram"></i><span>Instagram</span>
-            </div>
-            <div class="ios-btn" data-color="#ff9f00" data-link="STORE">
-                <i class="fas fa-store"></i><span>SANZ STORE</span>
-            </div>
-            <div class="ios-btn full-width" data-color="#25D366" data-link="https://whatsapp.com/channel/0029Vb75JrW6rsQsJJLxLt35">
-                <i class="fas fa-bullhorn"></i><span>Join Saluran WA</span>
-            </div>
-            <div class="ios-btn full-width" data-color="#fbbf24" data-link="https://files.catbox.moe/sx96s2.jpg">
-                <i class="fas fa-qrcode"></i><span>Support / Donasi</span>
-            </div>
+            <button onclick="closeBio()" style="width:100%; padding:12px; border-radius:18px; border:1px solid rgba(138,43,226,0.3); background:rgba(138,43,226,0.1); color:white; margin-top:20px; font-weight: 700; transition: 0.3s; cursor:pointer;">Tutup Bio</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="storeModal" onclick="closeStore()">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <h2 style="margin-bottom: 20px; color: var(--gojo-blue); font-size: 1.3rem; text-align: center; text-shadow: 0 0 10px rgba(0,240,255,0.5);">📦 SANZ STORE 01</h2>
-            
-            <div class="product-card">
-                <div><b>Nokos Indonesia</b><br><span style="color:#00f0ff; font-weight: bold;">Rp 8.000</span></div>
-                <a href="https://wa.me/6285718906011?text=Halo+Sanz,+mau+order+Nokos+Indonesia" class="btn-buy">Beli</a>
-            </div>
-            <div class="product-card">
-                <div><b>Nokos Thailand</b><br><span style="color:#00f0ff; font-weight: bold;">Rp 10.000</span></div>
-                <a href="https://wa.me/6285718906011?text=Halo+Sanz,+mau+order+Nokos+Thailand" class="btn-buy">Beli</a>
-            </div>
-            <div class="product-card">
-                <div><b>Nokos Filipina</b><br><span style="color:#00f0ff; font-weight: bold;">Rp 10.000</span></div>
-                <a href="https://wa.me/6285718906011?text=Halo+Sanz,+mau+order+Nokos+Filipina" class="btn-buy">Beli</a>
-            </div>
-            <div class="product-card">
-                <div><b>Afrika Selatan</b><br><span style="color:#00f0ff; font-weight: bold;">Rp 12.000</span></div>
-                <a href="https://wa.me/6285718906011?text=Halo+Sanz,+mau+order+Nokos+Afrika+Selatan" class="btn-buy">Beli</a>
-            </div>
-            <div class="product-card">
-                <div><b>Canada</b><br><span style="color:#00f0ff; font-weight: bold;">Rp 15.000</span></div>
-                <a href="https://wa.me/6285718906011?text=Halo+Sanz,+mau+order+Nokos+Canada" class="btn-buy">Beli</a>
-            </div>
-
-            <div style="text-align: center; margin: 20px 0 10px; font-size: 0.85rem; color: var(--text-secondary);">
-                <i>Nokos lain? tanya Sanz aja 🤙</i>
-            </div>
-
-            <button onclick="closeStore()" style="width:100%; padding:12px; border-radius:18px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:white; margin-top:10px; font-weight: 700; transition: 0.3s; cursor:pointer;">Tutup</button>
+            <h2 style="margin-bottom: 20px; color: var(--gojo-blue); font-size: 1.3rem; text-align: center;">📦 SANZ STORE 01</h2>
+            <div class="product-card"><div><b>Nokos Indonesia</b><br><span style="color:#00f0ff; font-weight: bold;">Rp 8.000</span></div><a href="https://wa.me/6285718906011?text=Halo+Sanz,+mau+order+Nokos+Indonesia" class="btn-buy">Beli</a></div>
+            <div class="product-card"><div><b>Nokos Thailand</b><br><span style="color:#00f0ff; font-weight: bold;">Rp 10.000</span></div><a href="https://wa.me/6285718906011?text=Halo+Sanz,+mau+order+Nokos+Thailand" class="btn-buy">Beli</a></div>
+            <div class="product-card"><div><b>Nokos Filipina</b><br><span style="color:#00f0ff; font-weight: bold;">Rp 10.000</span></div><a href="https://wa.me/6285718906011?text=Halo+Sanz,+mau+order+Nokos+Filipina" class="btn-buy">Beli</a></div>
+            <div class="product-card"><div><b>Afrika Selatan</b><br><span style="color:#00f0ff; font-weight: bold;">Rp 12.000</span></div><a href="https://wa.me/6285718906011?text=Halo+Sanz,+mau+order+Nokos+Afrika+Selatan" class="btn-buy">Beli</a></div>
+            <div class="product-card"><div><b>Canada</b><br><span style="color:#00f0ff; font-weight: bold;">Rp 15.000</span></div><a href="https://wa.me/6285718906011?text=Halo+Sanz,+mau+order+Nokos+Canada" class="btn-buy">Beli</a></div>
+            <div style="text-align: center; margin: 20px 0 10px; font-size: 0.85rem; color: var(--text-secondary);"><i>Nokos lain? tanya Sanz aja 🤙</i></div>
+            <button onclick="closeStore()" style="width:100%; padding:12px; border-radius:18px; border:1px solid rgba(0,240,255,0.2); background:rgba(0,240,255,0.05); color:white; margin-top:10px; font-weight: 700; transition: 0.3s; cursor:pointer;">Tutup Store</button>
         </div>
     </div>
 
     <script>
-        // SCRIPT BUAT PARTIKEL INFINITE VOID ☠️
+        // SCRIPT LOADING SCREEN ☠️
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loading-screen');
+                const mainContent = document.getElementById('main-content');
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.visibility = 'hidden';
+                    mainContent.classList.add('loaded');
+                }, 800);
+            }, 2000);
+        });
+
+        // SCRIPT JAM DIGITAL HACKER ⏱️
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour12: false }) + ' WIB';
+            document.getElementById('cyber-clock').innerText = timeString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // SCRIPT BUAT PARTIKEL DOMAIN EXPANSION 🌧️
         function createParticles() {
             const container = document.getElementById('particles-container');
-            const particleCount = 25; // Jumlah partikel, jangan kebanyakan ntar HP temen lu ngebul
-
-            for(let i = 0; i < particleCount; i++) {
+            container.innerHTML = ''; 
+            for(let i = 0; i < 40; i++) { 
                 let particle = document.createElement('div');
                 particle.className = 'particle';
-                
-                // Random ukuran, posisi, durasi
-                let size = Math.random() * 6 + 2; 
-                let posX = Math.random() * 100; 
-                let delay = Math.random() * 5; 
-                let duration = Math.random() * 5 + 5; 
-
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                particle.style.left = `${posX}vw`;
-                particle.style.animationDuration = `${duration}s`;
-                particle.style.animationDelay = `${delay}s`;
-
-                // Random warna biru atau ungu
-                if(Math.random() > 0.5) {
-                    particle.style.background = 'rgba(0, 240, 255, 0.7)';
-                    particle.style.boxShadow = '0 0 15px rgba(0, 240, 255, 1)';
-                } else {
-                    particle.style.background = 'rgba(138, 43, 226, 0.7)';
-                    particle.style.boxShadow = '0 0 15px rgba(138, 43, 226, 1)';
-                }
-
+                let width = Math.random() * 3 + 1; 
+                let height = Math.random() * 20 + 10; 
+                particle.style.width = width + 'px';
+                particle.style.height = height + 'px';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDuration = Math.random() * 1.5 + 0.5 + 's'; 
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.background = Math.random() > 0.5 ? 'var(--gojo-blue)' : 'var(--gojo-purple)';
+                particle.style.boxShadow = `0 0 15px ${particle.style.background}`;
                 container.appendChild(particle);
             }
         }
         createParticles();
 
-        // SCRIPT TOMBOL & MODAL
-        const buttons = document.querySelectorAll('.ios-btn');
-
-        buttons.forEach(btn => {
+        // SCRIPT TOMBOL GRID ANIMASI
+        document.querySelectorAll('.ios-btn').forEach(btn => {
+            if (btn.classList.contains('liquid-glass')) return; // Skip liquid buttons
+            
             const handleStart = (e) => {
                 const color = btn.getAttribute('data-color');
                 const icon = btn.querySelector('i');
-                
                 btn.style.transform = "scale(0.92)";
                 btn.style.borderColor = color;
                 btn.style.background = "rgba(255, 255, 255, 0.08)";
                 btn.style.boxShadow = `0 10px 20px ${color}33, inset 0 0 10px ${color}22`; 
-                
                 icon.style.color = color;
                 icon.style.textShadow = `0 0 25px ${color}`;
                 icon.style.transform = "scale(1.1)";
@@ -262,7 +319,6 @@
 
             const handleEnd = (e) => {
                 if (e.type === 'touchend') e.preventDefault();
-                
                 const link = btn.getAttribute('data-link');
                 const icon = btn.querySelector('i');
                 
@@ -275,7 +331,6 @@
                     } else {
                         window.open(link, '_blank');
                     }
-
                     setTimeout(() => {
                         btn.style.borderColor = "var(--ios-border)";
                         btn.style.background = "rgba(255, 255, 255, 0.03)";
@@ -288,10 +343,8 @@
 
             btn.addEventListener('mousedown', handleStart);
             btn.addEventListener('touchstart', handleStart, {passive: true});
-            
             btn.addEventListener('mouseup', handleEnd);
             btn.addEventListener('touchend', handleEnd);
-            
             btn.addEventListener('mouseleave', () => {
                 btn.style.transform = "scale(1)";
                 btn.style.borderColor = "var(--ios-border)";
@@ -301,14 +354,14 @@
                 btn.querySelector('i').style.textShadow = "none";
                 btn.querySelector('i').style.transform = "scale(1)";
             });
-            btn.addEventListener('touchcancel', () => {
-                btn.style.transform = "scale(1)";
-            });
         });
 
-        function closeStore() { 
-            document.getElementById('storeModal').classList.remove('show'); 
-        }
+        // FUNGSI BUKA TUTUP MODAL
+        function openBio() { document.getElementById('bioModal').classList.add('show'); }
+        function closeBio() { document.getElementById('bioModal').classList.remove('show'); }
+        function openTesti() { document.getElementById('testiModal').classList.add('show'); }
+        function closeTesti() { document.getElementById('testiModal').classList.remove('show'); }
+        function closeStore() { document.getElementById('storeModal').classList.remove('show'); }
     </script>
 </body>
 </html>
